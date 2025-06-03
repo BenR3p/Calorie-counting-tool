@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance Calorie Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+      max-width: 600px;
+      margin: auto;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 12px;
+      background-color: #2b2b2b;
+      color: #fff;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    .converter {
+      font-size: 0.9rem;
+      color: #a0a0a0;
+    }
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .popup-content {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 12px rgba(0,0,0,0.6);
+    }
+    .gdpr {
+      font-size: 0.75rem;
+      color: #bbb;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Maintenance Calorie Calculator</h1>
+
+    <label for="weight">Weight (kg or lbs)</label>
+    <input type="number" id="weight" placeholder="e.g. 70" oninput="convertWeight()">
+    <div class="converter" id="weightConverter"></div>
+
+    <label for="height">Height (cm or ft)</label>
+    <input type="number" id="height" placeholder="e.g. 175" oninput="convertHeight()">
+    <div class="converter" id="heightConverter"></div>
+
+    <label for="age">Age</label>
+    <input type="number" id="age" placeholder="e.g. 25">
+
+    <label for="gender">Gender</label>
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+
+    <label for="activity">Activity Level</label>
+    <select id="activity">
+      <option value="1.2">Sedentary</option>
+      <option value="1.375">Lightly active</option>
+      <option value="1.55">Moderately active</option>
+      <option value="1.725">Very active</option>
+      <option value="1.9">Super active</option>
+    </select>
+
+    <button onclick="showPopup()">Calculate Maintenance Calories</button>
+    <div class="gdpr">
+      Your information is stored securely and used only to deliver your results. By submitting your email, you agree to receive your calorie estimate.
+    </div>
+  </div>
+
+  <div class="popup" id="emailPopup">
+    <div class="popup-content">
+      <label for="email">Enter your email to receive your results:</label>
+      <input type="email" id="email" placeholder="your@email.com" />
+      <button onclick="submitEmail()">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    function convertWeight() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      if (isNaN(weight)) return;
+      const lbToKg = (weight * 0.453592).toFixed(2);
+      const kgToLb = (weight / 0.453592).toFixed(2);
+      document.getElementById('weightConverter').innerText = `~ ${lbToKg} kg / ${kgToLb} lbs`;
+    }
+
+    function convertHeight() {
+      const height = parseFloat(document.getElementById('height').value);
+      if (isNaN(height)) return;
+      const ftToCm = (height * 30.48).toFixed(2);
+      const cmToFt = (height / 30.48).toFixed(2);
+      document.getElementById('heightConverter').innerText = `~ ${ftToCm} cm / ${cmToFt} ft`;
+    }
+
+    function showPopup() {
+      document.getElementById("emailPopup").style.display = "flex";
+    }
+
+    function submitEmail() {
+      const email = document.getElementById("email").value;
+      if (!email) return;
+
+      fetch("https://script.google.com/macros/s/AKfycbw4ed7byRJhXeMTjjW_aeSYux4YFmQgiAQjxHE3OqlGJbLC5ns5_7fyyifV9AM8a5Y/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      document.getElementById("emailPopup").style.display = "none";
+      alert("Thank you! Your calorie estimate will appear now.");
+    }
+  </script>
+</body>
+</html>
